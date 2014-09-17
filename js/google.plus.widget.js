@@ -77,26 +77,44 @@
                     $(response.items).each(function(index, value){
                         var item = $('<li class="google-plus-widget-item"></li>').css('opacity', 0);
                         item.appendTo(items);
+                        
+                        if(options.image === 'avatar'){
+                            var postImage = $('<div class="google-plus-widget-avatar"><a href="' + this.actor.url + '" target="_blank" title="' + this.actor.displayName + '"><img class="avatar" src="' + this.actor.image.url + '" width="20" height="20" alt="' + this.actor.displayName + '" /></a></div>');
+                            postImage.appendTo(item);
+                        }else if(options.image === 'attachment'){
+                            var firstAttachment = this.object.attachments[0];
+                            if (firstAttachment !== undefined ) {
+                                var postImage = $('<div class="google-plus-widget-avatar"><a href="' + this.url + '" target="_blank" title="' + firstAttachment.displayName + '"><img class="image" src="' + firstAttachment.image.url + '" alt="' + firstAttachment.displayName + '" /></a></div>');
+                                postImage.appendTo(item);
+                                
+                            }
+                        }
 
-                        var avatar = $('<div class="google-plus-widget-avatar"><a href="' + this.actor.url + '" target="_blank" title="' + this.actor.displayName + '"><img src="' + this.actor.image.url + '" width="20" height="20" alt="' + this.actor.displayName + '" /></a></div>');
-                        avatar.appendTo(item);
+                        if(options.showLinks){
+                            var permalink = $('<div class="google-plus-widget-permalink"><a href="' + this.url + '" target="_blank" title="' + options.captionPermalink + '">#</a></div>');
+                            permalink.appendTo(item);
+                        }
 
-                        var permalink = $('<div class="google-plus-widget-permalink"><a href="' + this.url + '" target="_blank" title="' + options.captionPermalink + '">#</a></div>');
-                        permalink.appendTo(item);
-
-                        var title = $('<div class="google-plus-widget-title"><div class="google-plus-widget-title-link"><a href="#">' + this.title + '</a></div></div>');
-                        title.click(function(){
-                            $(this).next().fadeToggle();
-                            $(this).find('a').toggleClass('active');
-                            return false;
-                        });
+                        var title = $('<div class="google-plus-widget-title"><div class="google-plus-widget-title-link"><a href="' + (options.showContent ? '#' : this.url) + '">' + this.title + '</a></div></div>');
+                        if(options.showContent){
+                            title.click(function(){
+                                $(this).next().fadeToggle();
+                                $(this).find('a').toggleClass('active');
+                                return false;
+                            });
+                        }
+                        
                         title.appendTo(item);
+                        
+                        if(options.showComments){                    
+                            var comments = $('<div class="google-plus-widget-comments"><a href="' + this.url + '" target="_blank" title="' + options.captionComments + '">' + this.object.replies.totalItems + '</a></div>');
+                            comments.appendTo(title);
+                        }
 
-                        var comments = $('<div class="google-plus-widget-comments"><a href="' + this.url + '" target="_blank" title="' + options.captionComments + '">' + this.object.replies.totalItems + '</a></div>');
-                        comments.appendTo(title);
-
-                        var content = $('<div class="google-plus-widget-content">' + this.object.content + '</div>');
-                        content.appendTo(item);
+                        if(options.showContent){
+                            var content = $('<div class="google-plus-widget-content">' + this.object.content + '</div>').css({"display" : "none"});
+                            content.appendTo(item);
+                        }
 
                         var foundAttachments = 0;
                         var attachments = [];
@@ -150,6 +168,10 @@
 
     $.fn.googlePlusWidget.defaults = {
         maxResults: 4,
+        image : 'attachment', // avatar | attachment
+        showContent: true,
+        showLinks: true,
+        showComments: true,
         captionMore: 'more',
         captionPermalink: 'see on Google+',
         captionComments: 'see comments on Google+',

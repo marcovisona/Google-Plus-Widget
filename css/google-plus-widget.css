@@ -80,22 +80,27 @@
     position: relative;
 }
 
+.google-plus-widget-item::after {
+    clear: both;
+    content: ".";
+    height: 0;
+    display: block;
+    visibility: hidden;
+}
+
 /**
  * =google-plus-widget-title
  **************************************************************************************************/
 
 .google-plus-widget-title
 {
-    position: relative;
 }
 
 .google-plus-widget-error,
 .google-plus-widget-title .google-plus-widget-title-link a
 {
     display: block;
-    background: url(../img/gpw-title.png) 0 100% no-repeat #808080;
     padding: 8px 9px;
-    border-bottom: 1px solid #575757;
     margin-bottom: 1px;
     padding-left: 42px;
     padding-right: 20px;
@@ -173,16 +178,18 @@
 
 .google-plus-widget-avatar
 {
-    position: absolute;
-    top: 6px;
-    left: 9px;
-    z-index: 9999;
+    float: left;
 }
 
 .google-plus-widget-avatar img
 {
     display: block;
     border: 2px solid #333;
+}
+
+.google-plus-widget-avatar .image
+{
+    width: 100px;
 }
 
 .google-plus-widget-avatar a:hover img
